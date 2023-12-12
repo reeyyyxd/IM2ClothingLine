@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_mysqldb import MySQL
 from flask_mysqldb import MySQL
 import pymysql
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ app.config['MYSQL_PASSWORD'] = "jasminrap"
 app.config['MYSQL_DB'] = "JJRREClothingLine"
 #hehe
 
+mysql=MySQL(app)
 
 @app.route("/")
 def welcome():
