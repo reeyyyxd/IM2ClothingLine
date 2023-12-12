@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Admin Panel</title>
 </head>
 <body>
+
+    <table>
+        <tr>
+            <td>HELLO {{ username }} welcome to admin panel</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td><a href="{{ url_for('verification') }}">Verification</a></td>
+            <td>&nbsp<a href="{{ url_for('addStorage') }}">Add Storage</a></td>
+            <td>&nbsp<a href="{{ url_for('storage') }}">Check Storage</a></td>
+        </tr>
+    </table>
 
 </body>
 </html>
