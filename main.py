@@ -1,4 +1,9 @@
 from flask import Flask, render_template
+from flask_mysqldb import MySQL
+import pymysql
+from dotenv import load_dotenv
+from os import getenv
+
 #haha
 
 app = Flask(__name__)
