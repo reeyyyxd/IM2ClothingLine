@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>User Login</title>
 </head>
 <body>
+
+    <h2>User Login</h2>
+    <form method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <input type="submit" name="btnLogin" value="Log In">
+    </form>
+
+    <p>You don't have an account? Click here <a href="{{ url_for('register') }}">Register</a></p>
 
 </body>
 </html>

@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html>
 <body>
-
+    <h2>Email Verification</h2>
+    <form method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="verificationCode">Verification Code:</label>
+        <input type="text" id="verificationCode" name="verificationCode" required>
+        <input type="submit" name="btnVerify" value="Verify Email">
+    </form>
+    <h2>Registered Users</h2>
+    <table border="1">
+        <tr>
+            <th>Username&nbsp;&nbsp;</th>
+            <th>Verification Code&nbsp;&nbsp;</th>
+            <th>Verified User "1 = not" while "0 = verified"</th>
+        </tr>
+        {% for row in users %}
+            <tr>
+                <td>{{ row['username'] }}</td>
+                <td>{{ row['verificationCode'] }}</td>
+                <td>{{ row['verifiedUser'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

@@ -2,9 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Register</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            width: 300px;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="submit"],
+        a {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            text-align: center;
+            text-decoration: none;
+            color: black;
+        }
+    </style>
 </head>
 <body>
+
+<form method="post" action="/register">
+    <h1 style="text-align: center;">Register</h1>
+    <input type="text" id="txtUname" name="txtUname" placeholder="Username" required>
+
+    <input type="text" name="txtFname" placeholder="Firstname" required>
+
+    <input type="text" name="txtLname" placeholder="Lastname" required>
+
+    <input type="password" name="txtPwd" placeholder="Input Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+
+    <input type="tel" id="phoneNumber" name="phoneNumber" pattern="[0-9]{4}[0-9]{3}[0-9]{4}" placeholder="Phone Number" required>
+
+    <input type="email" id="emailAddress" name="emailAddress" pattern=".+@gmail\.com" size="50" placeholder="Email" required>
+
+    <input type="submit" name="btnRegister" value="Register">
+    <a href="/" style="text-align: center;">Return</a>
+</form>
 
 </body>
 </html>
