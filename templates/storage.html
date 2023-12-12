@@ -2,9 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage</title>
 </head>
 <body>
-
+    <h1>Storage</h1>
+    <table border="1">
+        <tr>
+            <td>Product ID</td>
+            <td>Product Name</td>
+            <td>Price</td>
+            <td>Quantity</td>
+        </tr>
+        {% for item in display %}
+            <tr>
+                <td>{{ item['product_id'] }}</td>
+                <td>{{ item['product_name'] }}</td>
+                <td>{{ item['price'] }} PHP</td>
+                <td>{{ item['quantity'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form method="POST">
+        <input type="submit" name="btnReturn" value="Return">
+    </form>
 </body>
 </html>
