@@ -33,7 +33,7 @@ def register():
         email = request.form['emailAddress']
         uType = 0
         vUser = 1
-
+#hello
         con = mysql.connection
         cursor = con.cursor()
 
