@@ -7,7 +7,7 @@ app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "root"
 app.config['MYSQL_PASSWORD'] = "jasminrap"
 app.config['MYSQL_DB'] = "JJRREClothingLine"
-
+#hehe
 
 
 @app.route("/")
