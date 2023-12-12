@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Storage</title>
 </head>
 <body>
+
+<form method="POST" action="{{ url_for('addStorage') }}">
+
+    <h2>Add Storage</h2>
+    <pre>
+        <input type="text" name="txtProductName" placeholder="Input Product Name">
+        <input type="text" name="txtDescription" placeholder="Input Description">
+        <input type="text" name="txtStock" placeholder="Input Stock">
+        <input type="text" name="txtPrice" placeholder="Input Price">
+        <input type="submit" name="btnAddtoStorage" value="Add to Storage">
+        <form method="POST"><input type="submit" name="btnReturn" value="Return">
+        </form>
+    </pre>
+
+</form>
 
 </body>
 </html>

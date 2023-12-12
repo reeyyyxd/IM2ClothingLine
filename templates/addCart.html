@@ -2,9 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart</title>
 </head>
 <body>
+    <h2>Product List</h2>
+    <table border="1">
+        <tr>
+            <th>Product Name&nbsp;&nbsp;</th>
+            <th>Product Description&nbsp;&nbsp;</th>
+            <th>Price</th>
+        </tr>
+        {% for row in all_product %}
+            <tr>
+                <td>{{ row['product_name'] }}</td>
+                <td>{{ row['description'] }}</td>
+                <td>{{ row['price'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br><br>
+    <h2>Select Product you want to buy</h2>
+    <form method="POST">
+        <label>Select a clothing brand</label>
+        <select name="txtProductName">
+            {% for category in all_categories %}
+                <option value="{{ category['product_name'] }}">
+                    {{ category['product_name'] }}
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Product Description:</label>
+        <input type="text" name="txtDescription" ><br><br>
+
+        <label>Quantity:</label>
+        <input type="number" name="txtQuantity"><br><br>
+
+        <input type="submit" value="Add to Cart" name="submit">
+        <a href="checkout">Payment</a>
+    </form><br>
 
 </body>
 </html>
