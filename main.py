@@ -65,8 +65,36 @@ def generate_verification_code():
     return code
 
 #ellan
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        uname = request.form['username']
+        pwd = request.form['password']
+
+        con = mysql.connection
+        cursor = con.cursor()
+
+        # Check if user is verified
+        sql = f"SELECT *, IF(verificationCode IS NULL, 1, 0) AS verifiedUser FROM customers WHERE username='{uname}'"
+        cursor.execute(sql)
+        row = cursor.fetchone()
+
+        if row and row[8] == 0:  # Assuming 'userType' is the 9th column (index 8)
+            if row[3] != pwd:  # Assuming 'password' is the 4th column (index 3)
+                return "<script language='javascript'>alert('Password not existing');</script>"
+            else:
+                if row[6] == 0:  # Assuming 'userType' is the 7th column (index 6)
+                    session['username'] = row[0]  # Assuming 'username' is the 1st column (index 0)
+                    return redirect('/addCart')
+                elif row[6] == 1:  # Assuming 'userType' is the 7th column (index 6)
+                    session['Username'] = row[0]  # Assuming 'username' is the 1st column (index 0)
+                    return redirect('/admin')
+                else:
+                    return "<script language='javascript'>alert('Invalid user type');</script>"
+        else:
+            # User is not verified
+            return "<script language='javascript'>alert('Wait for the admin to verify your account.');</script>"
+
     return render_template('login.html')
 
 #rey
