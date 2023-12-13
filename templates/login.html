@@ -3,11 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>User Login</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+        }
+        form {
+            width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        a {
+            color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
 
-    <h2>User Login</h2>
-    <form method="post">
+    <form method="post" action="/login">
+        <h1>User Login</h1>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
@@ -15,9 +72,9 @@
         <input type="password" id="password" name="password" required>
 
         <input type="submit" name="btnLogin" value="Log In">
-    </form>
 
-    <p>You don't have an account? Click here <a href="{{ url_for('register') }}">Register</a></p>
+        <p>You don't have an account? Click here <a href="register.html">Register</a></p>
+    </form>
 
 </body>
 </html>
