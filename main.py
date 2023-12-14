@@ -111,7 +111,10 @@ def checkout():
 #jobeteezy
 @app.route("/admin")
 def admin():
-    return render_template('admin.html')
+    if 'Username' in session:
+        return render_template('admin.html', username=session['Username'])
+    else:
+        return redirect(url_for('login'))
 
 #rey
 @app.route("/verification")
@@ -123,7 +126,28 @@ def email_verification():
 #jobeteezy
 @app.route("/storage")
 def storage():
-    return render_template('storage.html')
+    cursor = mysql.connection.cursor()
+
+    # Fetch product and inventory data from the database
+    sql = "SELECT * FROM product"
+    cursor.execute(sql)
+    product_data = cursor.fetchall()
+
+    display = []
+    for p_row in product_data:
+        sql = "SELECT * FROM inventory WHERE inventory_id = %s AND prod_id = %s"
+        cursor.execute(sql, (p_row[4], p_row[0]))
+        inventory_data = cursor.fetchone()
+
+        if inventory_data:
+            display.append({
+                'product_id': p_row[0],
+                'product_name': p_row[1],
+                'price': p_row[3],
+                'quantity': inventory_data[1],
+            })
+
+    return render_template('storage.html', display=display)
 
 #rhyss
 @app.route("/addStorage")
