@@ -1,28 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #808080;
+            color: white;
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+            idth: 600px;
+            background-color: #ffffff;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+	input[type="submit"]:hover {
+ 	   background-color: #45a049;
+	}
+        h1, h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
-    <h2>Email Verification</h2>
+
     <form method="post">
+	<h1>Email Verification</h1>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <label for="verificationCode">Verification Code:</label>
         <input type="text" id="verificationCode" name="verificationCode" required>
         <input type="submit" name="btnVerify" value="Verify Email">
-    </form>
-    <h2>Registered Users</h2>
-    <table border="1">
-        <tr>
-            <th>Username&nbsp;&nbsp;</th>
-            <th>Verification Code&nbsp;&nbsp;</th>
-            <th>Verified User "1 = not" while "0 = verified"</th>
-        </tr>
-        {% for row in users %}
+
+        <h2>Registered Users</h2>
+        <table>
             <tr>
-                <td>{{ row['username'] }}</td>
-                <td>{{ row['verificationCode'] }}</td>
-                <td>{{ row['verifiedUser'] }}</td>
+                <th>Username</th>
+                <th>Verification Code</th>
+                <th>Verified User (1 = not, 0 = verified)</th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for row in users %}
+                <tr>
+                    <td>{{ row['username'] }}</td>
+                    <td>{{ row['verificationCode'] }}</td>
+                    <td>{{ row['verifiedUser'] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
 </body>
 </html>
