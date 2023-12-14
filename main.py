@@ -150,8 +150,57 @@ def storage():
     return render_template('storage.html', display=display)
 
 #rhyss
-@app.route("/addStorage")
+@app.route("/addStorage", methods=['GET', 'POST'])
 def addStorage():
+    if request.method == 'POST':
+        productname = request.form['txtProductName']
+        description = request.form['txtDescription']
+        stock = int(request.form['txtStock'])
+        price = float(request.form['txtPrice'])
+
+        cursor = mysql.connection.cursor()
+
+        # Check if the product already exists
+        sql = "SELECT * FROM product WHERE UPPER(product_name) = UPPER(%s)"
+        cursor.execute(sql, (productname,))
+        existing_product = cursor.fetchone()
+
+        if existing_product:
+            productID = existing_product[0]
+
+            # Update the inventory stock
+            sql = "SELECT stock FROM inventory WHERE prod_id = %s"
+            cursor.execute(sql, (productID,))
+            existing_stock = cursor.fetchone()
+
+            if existing_stock:
+                stock += existing_stock[0]
+
+                # Update inventory
+                sql_update_inventory = "UPDATE inventory SET stock = %s WHERE prod_id = %s"
+                cursor.execute(sql_update_inventory, (stock, productID))
+
+                mysql.connection.commit()
+
+                return redirect(url_for('addStorage'))
+            else:
+                return "Error fetching existing stock from inventory"
+        else:
+            # Insert new product
+            sql_insert_product = "INSERT INTO product (product_name, description, price, inventory_id) VALUES (%s, %s, %s, 1)"
+            cursor.execute(sql_insert_product, (productname, description, price))
+            mysql.connection.commit()
+
+            # Get the product ID of the newly inserted product
+            productID = cursor.lastrowid
+
+            # Insert new inventory record
+            sql_insert_inventory = "INSERT INTO inventory (inventory_id, stock, prod_id) VALUES (1, %s, %s)"
+            cursor.execute(sql_insert_inventory, (stock, productID))
+            mysql.connection.commit()
+
+            return redirect(url_for('addStorage'))
+
     return render_template('addstorage.html')
 
 
