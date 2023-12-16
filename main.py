@@ -206,7 +206,7 @@ def checkout():
 
         if row['totalAmountPayment'] > payment:
             return "<script language='javascript'>alert('Insufficient Funds'); window.history.back();</script>"
-        elif row['totalAmountPayment'] < payment:
+        elif row['totalAmountPayment'] <= payment:
             balance = payment - row['totalAmountPayment']
             cursor.execute("UPDATE payment SET totalAmountPayment=0 WHERE username=%s", (session['username'],))
             connection.commit()
