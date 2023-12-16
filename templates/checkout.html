@@ -2,64 +2,13 @@
 <html>
 <head>
     <title>Checkout</title>
-
-     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            flex-direction: column; 
-        }
-
-        form {
-            width: 300px;
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-top: 0; 
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        textarea {
-            width: calc(100% - 20px);
-            padding: 5px;
-            margin-bottom: 10px;
-        }
-
-        input[type="submit"] {
-            background-color: #4CAF50;;
-            margin-top: 20px;
-            color: #ffffff;
-            padding: 8px 15px;
-            display: block;
-            margin: 0 auto; 
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-         input[type="submit"]:hover {
-            background-color: #24b300;
-        }
-    </style>
 </head>
 <body>
     <h2>Checkout</h2>
+    <pre>
     <form method="post" action="{{ url_for('checkout') }}">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ username }}" readonly required>
+        <input type="text" id="name" name="name" value="{{ session['username'] }}" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
@@ -68,12 +17,13 @@
         <textarea id="address" name="address" required></textarea>
 
         <label for="name">Payment:</label>
-        <input type="text" id="payment" name="payment" value="{{ payment }}" readonly required>
+        <input type="text" id="payment" name="payment" value="{{ session['payment'] }}" required>
 
         <label for="money">Money Tendered: </label>
         <input type="text" id="money" name="money" required>
 
         <input type="submit" name="btnOrder" value="Place Order">
     </form>
+  </pre>
 </body>
 </html>
