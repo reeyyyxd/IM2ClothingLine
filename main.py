@@ -96,7 +96,7 @@ def login():
 
             if row['userType'] == 0:
                 session['username'] = row['username']
-                return redirect(url_for('product_listing'))
+                return redirect(url_for('addCart'))
             else:
                 session['username'] = row['username']
                 return redirect(url_for('admin'))
