@@ -109,7 +109,7 @@ def login():
 
     return render_template('login.html')
 
-
+#pra mo push
 #rey
 @app.route("/addCart", methods=['GET', 'POST'])
 def addCart():
