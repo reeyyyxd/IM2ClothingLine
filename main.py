@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mysqldb import MySQL
 import pymysql
 
-
-
 app = Flask(__name__)
 app.secret_key = '123123'
 
@@ -21,13 +19,17 @@ def get_mysql_connection():
                            password=app.config['MYSQL_PASSWORD'],
                            database=app.config['MYSQL_DB'],
                            cursorclass=pymysql.cursors.DictCursor)
-mysql=MySQL(app)
+
+
+mysql = MySQL(app)
+
 
 @app.route("/")
 def welcome():
     return render_template('welcome.html')
 
-#ellan
+
+# ellan
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -66,6 +68,7 @@ def register():
 
     return render_template('register.html')
 
+
 def generate_verification_code():
     import random
     import string
@@ -75,7 +78,8 @@ def generate_verification_code():
     code = ''.join(random.choice(characters) for _ in range(code_length))
     return code
 
-#ellan
+
+# ellan
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST' and 'btnLogin' in request.form:
@@ -109,26 +113,27 @@ def login():
 
     return render_template('login.html')
 
-#pra mo push
-#rey
+
+# rey
 @app.route("/addCart", methods=['GET', 'POST'])
 def addCart():
     connection = get_mysql_connection()
     cursor = connection.cursor()
 
-    # Fetch product
-    cursor.execute("SELECT * FROM product")
+    # Fetch product availability data from the view
+    cursor.execute("SELECT * FROM product_availability_view")
     all_product = cursor.fetchall()
 
-    # Fetch Category
-    all_categories = all_product  # Assuming all products are also categories
+
+    all_categories = all_product
 
     if request.method == 'POST' and 'submit' in request.form:
         productname = request.form['txtProductName']
         description = request.form['txtDescription']
         quantity = int(request.form['txtQuantity'])
 
-        cursor.execute("SELECT * FROM product WHERE UPPER(product_name) = UPPER(%s) AND description = %s",
+        # Use the product_availability_view in the query
+        cursor.execute("SELECT * FROM product_availability_view WHERE UPPER(product_name) = UPPER(%s) AND description = %s",
                        (productname, description))
         row = cursor.fetchone()
 
@@ -136,14 +141,11 @@ def addCart():
             productID = row['product_id']
             price = row['price']
 
-            cursor.execute("SELECT * FROM inventory WHERE prod_id=%s", (productID,))
-            row_inventory = cursor.fetchone()
-
-            if row_inventory['stock'] >= quantity:
+            if row['stock'] >= quantity:
                 total_payment = price * quantity
 
                 # Decrease the stock in inventory
-                new_stock = row_inventory['stock'] - quantity
+                new_stock = row['stock'] - quantity
 
                 # Check if there is enough stock to fulfill the order
                 if new_stock >= 0:
@@ -157,16 +159,13 @@ def addCart():
                         cursor.execute("UPDATE payment SET totalAmountPayment = %s WHERE username = %s",
                                        (total_payment, session['username']))
                     else:
-                        # Check if the user has a record in the payment table
                         cursor.execute("SELECT * FROM payment WHERE username = %s", (session['username'],))
                         existing_payment_row = cursor.fetchone()
 
                         if existing_payment_row:
-                            # Update existing record
                             cursor.execute("UPDATE payment SET totalAmountPayment = %s WHERE username = %s",
                                            (total_payment, session['username']))
                         else:
-                            # Insert new record
                             cursor.execute("INSERT INTO payment (totalAmountPayment, username) VALUES (%s, %s)",
                                            (total_payment, session['username']))
 
@@ -177,21 +176,17 @@ def addCart():
                             "window.location.href = "
                             "'/addCart';</script>")
                 else:
-                    # Insufficient stock, return JSON response for JavaScript alert
-                    return "<script language='javascript'>alert('Not enough stock/s');</script>"
+                    return "<script language='javascript'>alert('Not enough stock/s');window.history.back();</script>"
             else:
-                # Insufficient stock, return JSON response for JavaScript alert
-                return "<script language='javascript'>alert('Not enough stock/s');</script>"
+                return "<script language='javascript'>alert('Not enough stock/s');window.history.back();</script>"
         else:
-            # Product not found, return JSON response for JavaScript alert
-            return "<script language='javascript'>alert('Product not found');</script>"
+            return "<script language='javascript'>alert('Product not found');window.history.back();</script>"
 
     connection.close()
 
     return render_template('addCart.html', all_product=all_product, all_categories=all_categories)
 
 
-#rey
 @app.route("/checkout", methods=['GET', 'POST'])
 def checkout():
     connection = get_mysql_connection()
@@ -215,13 +210,13 @@ def checkout():
                                                                                                  "window.location.href "
                                                                                                  "= '/addCart';"
                                                                                                  "</script>")
+
     connection.close()
 
     return render_template('checkout.html')
 
 
-
-#jobeteezy
+# jobeteezy
 @app.route("/admin")
 def admin():
     if 'Username' in session:
@@ -229,7 +224,8 @@ def admin():
     else:
         return redirect(url_for('login'))
 
-#rey
+
+# rey
 @app.route("/verification", methods=['GET', 'POST'])
 def email_verification():
     connection = get_mysql_connection()
@@ -245,18 +241,17 @@ def email_verification():
         row = cursor.fetchone()
 
         if row:
-            # Update the user's verification status
+            # Update the user's verification status to 0 (verified)
             cursor.execute("UPDATE customers SET verificationCode='', verifiedUser=0 WHERE username=%s", (username,))
 
             connection.commit()
-
             render_template('verification.html')
 
             return ("<script language='javascript'>alert('Customer has been verified.');"
                     " window.history.back();</script>")
 
         else:
-            return ("<script language='javascript'>alert('Invalid verification code. Please try again.');"
+            return ("<script language='javascript'>alert('Invalid user or verification code. Please try again.');"
                     " window.history.back();</script>")
 
     # Fetch Registered Users
@@ -271,34 +266,19 @@ def fetch_registered_users(cursor):
     cursor.execute("SELECT *, IF(verificationCode IS NULL, 1, 0) AS verifiedUser FROM customers")
     return cursor.fetchall()
 
-#jobeteezy
+
+# jobeteezy
 @app.route("/storage")
 def storage():
     connection = get_mysql_connection()
     cursor = connection.cursor()
 
     # Fetch product and inventory data
-    cursor.execute("SELECT * FROM product")
-    prod_result = cursor.fetchall()
-
-    display_data = []
-    for p_row in prod_result:
-        cursor.execute("SELECT * FROM inventory WHERE inventory_id=%s AND prod_id=%s",
-                       (p_row['inventory_id'], p_row['product_id']))
-        inven_row = cursor.fetchone()
-
-        if inven_row:
-            display_data.append({
-                'product_id': p_row['product_id'],
-                'product_name': p_row['product_name'],
-                'price': p_row['price'],
-                'stock': inven_row['stock']
-            })
+    cursor.execute("SELECT * FROM product_details")
+    display_data = cursor.fetchall()
 
     connection.close()
-
     return render_template('storage.html', storage_data=display_data)
-    return render_template('checkout.html')
 
 
 @app.route("/update_product", methods=['PUT'])
@@ -307,23 +287,27 @@ def update_product():
 
     product_id = data.get('product_id')
     new_name = data.get('new_name')
+    new_description = data.get('new_description')
     new_price = data.get('new_price')
     new_quantity = data.get('new_quantity')
 
     connection = get_mysql_connection()
     cursor = connection.cursor()
 
-    # Update product information
-    cursor.execute("UPDATE product SET product_name=%s, price=%s WHERE product_id=%s",
-                   (new_name, new_price, product_id))
+    try:
+        # Call the stored procedures
+        cursor.callproc("UpdateProduct", (product_id, new_name, new_description, new_price))
+        cursor.callproc("UpdateInventory", (product_id, new_quantity))
 
-    # Update inventory information
-    cursor.execute("UPDATE inventory SET stock=%s WHERE prod_id=%s", (new_quantity, product_id))
+        connection.commit()
+        return jsonify({'message': 'Product updated successfully'})
 
-    connection.commit()
-    connection.close()
+    except Exception as e:
+        connection.rollback()
+        return jsonify({'error': str(e)})
 
-    return jsonify({'message': 'Product updated successfully'})
+    finally:
+        connection.close()
 
 
 @app.route("/delete_product/<int:product_id>", methods=['DELETE'])
@@ -331,18 +315,22 @@ def delete_product(product_id):
     connection = get_mysql_connection()
     cursor = connection.cursor()
 
-    # Delete product
-    cursor.execute("DELETE FROM product WHERE product_id=%s", (product_id,))
+    try:
+        # Call the stored procedure
+        cursor.callproc('DeleteProduct', (product_id,))
+        connection.commit()
 
-    # Delete inventory
-    cursor.execute("DELETE FROM inventory WHERE prod_id=%s", (product_id,))
+        return jsonify({'message': 'Product deleted successfully'})
 
-    connection.commit()
-    connection.close()
+    except pymysql.Error as e:
+        # Handle any database errors
+        return jsonify({'error': f'Database error: {e}'})
 
-    return jsonify({'message': 'Product deleted successfully'})
+    finally:
+        connection.close()
 
-#rhyss
+
+# rhyss
 @app.route("/addStorage", methods=['GET', 'POST'])
 def addStorage():
     connection = get_mysql_connection()
@@ -353,40 +341,18 @@ def addStorage():
         description = request.form['txtDescription']
         stock = int(request.form['txtStock'])
         price = float(request.form['txtPrice'])
-        product_id = 0
 
-        cursor.execute("SELECT * FROM product")
-        prod_result = cursor.fetchall()
-
-        for row in prod_result:
-            if product_name.upper() == row['product_name'].upper():
-                product_id = row['product_id']
-                cursor.execute("SELECT stock FROM inventory WHERE prod_id=%s", (product_id,))
-                inventory_row = cursor.fetchone()
-
-                if inventory_row:
-                    stock += inventory_row['stock']
-                    cursor.execute("UPDATE inventory SET stock=%s WHERE prod_id=%s", (stock, product_id))
-                    connection.commit()
-                    return render_template('addstorage.html', message='Updated Stock')
-
-        cursor.execute("INSERT INTO product (product_name, description, price, inventory_id) VALUES (%s, %s, %s, %s)",
-                       (product_name, description, price, 1))
-        connection.commit()
-
-        product_id = cursor.lastrowid
-        cursor.execute("INSERT INTO inventory (inventory_id, stock, prod_id) VALUES (1, %s, %s)", (stock, product_id))
-        connection.commit()
-
-        return "<script language='javascript'>alert('Item Added'); window.history.back();</script>"
+        try:
+            cursor.callproc('AddProduct', (product_name, description, price, stock))
+            connection.commit()
+            return "<script language='javascript'>alert('Item Added.'); window.history.back();</script>"
+        except Exception as e:
+            return render_template('addstorage.html', message=f'Error: {str(e)}')
 
     connection.close()
 
     return render_template('addstorage.html')
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     app.run(debug=True)
-
-
-

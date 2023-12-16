@@ -7,6 +7,7 @@
         <tr>
             <td>Product ID</td>
             <td>Product Name</td>
+            <td>Description</td>
             <td>Price</td>
             <td>Quantity</td>
             <td>Actions</td>
@@ -15,10 +16,11 @@
         <tr>
             <td>{{ row.product_id }}</td>
             <td>{{ row.product_name }}</td>
+            <td>{{ row.description }}</td>
             <td>{{ row.price }} php</td>
             <td>{{ row.stock }}</td>
             <td>
-                <button onclick="openUpdateModal('{{ row.product_id }}', '{{ row.product_name }}', '{{ row.price }}', '{{ row.stock }}')">Update</button>
+                <button onclick="openUpdateModal('{{ row.product_id }}', '{{ row.product_name }}', '{{ row.description}}','{{ row.price }}', '{{ row.stock }}')">Update</button>
                 <button onclick="deleteProduct('{{ row.product_id }}')">Delete</button>
             </td>
         </tr>
@@ -26,89 +28,93 @@
     </table>
 
     <!-- Modal for Update -->
-   <div id="updateModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeUpdateModal()">&times;</span>
-        <h2>Update Product</h2>
-        <form id="updateForm">
-            <!-- Use the correct ID for the product_id field -->
-            <input type="hidden" id="productId" name="productId">
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <h2>Update Product</h2>
+            <form id="updateForm">
+                <input type="hidden" id="productId" name="productId">
 
-            <label for="newName">New Name:</label>
-            <input type="text" id="newName" name="newName" required>
+                <label for="newName">New Name:</label>
+                <input type="text" id="newName" name="newName" required>
 
-            <label for="newPrice">New Price:</label>
-            <input type="text" id="newPrice" name="newPrice" required>
+                <label for="newDescription">New Description:</label>
+                <input type="text" id="newDescription" name="newDescription" required>
 
-            <label for="newQuantity">New Quantity:</label>
-            <input type="text" id="newQuantity" name="newQuantity" required>
+                <label for="newPrice">New Price:</label>
+                <input type="text" id="newPrice" name="newPrice" required>
 
-            <input type="button" value="Update" onclick="updateProduct()">
-        </form>
+                <label for="newQuantity">New Quantity:</label>
+                <input type="text" id="newQuantity" name="newQuantity" required>
+
+                <input type="button" value="Update" onclick="updateProduct()">
+            </form>
+        </div>
     </div>
-</div>
 
     <script>
-    function openUpdateModal(product_id, product_name, price, stock) {
-
-    document.getElementById("productId").value = product_id;
-    document.getElementById("newName").value = product_name;
-    document.getElementById("newPrice").value = price;
-    document.getElementById("newQuantity").value = stock;
-    document.getElementById("updateModal").style.display = "block";
-}
+        function openUpdateModal(product_id, product_name, description, price, stock) {
+            document.getElementById("productId").value = product_id;
+            document.getElementById("newName").value = product_name;
+            document.getElementById("newDescription").value = description;
+            document.getElementById("newPrice").value = price;
+            document.getElementById("newQuantity").value = stock;
+            document.getElementById("updateModal").style.display = "block";
+        }
 
         function closeUpdateModal() {
             document.getElementById("updateModal").style.display = "none";
         }
 
-       function updateProduct() {
-    var product_id = document.getElementById("productId").value;
-    var new_name = document.getElementById("newName").value;
-    var new_price = document.getElementById("newPrice").value;
-    var new_quantity = document.getElementById("newQuantity").value;
+        function updateProduct() {
+            var product_id = document.getElementById("productId").value;
+            var new_name = document.getElementById("newName").value;
+            var new_description = document.getElementById("newDescription").value;
+            var new_price = document.getElementById("newPrice").value;
+            var new_quantity = document.getElementById("newQuantity").value;
 
-    fetch('/update_product', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            product_id: product_id,
-            new_name: new_name,
-            new_price: new_price,
-            new_quantity: new_quantity
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        closeUpdateModal();
-        // You may refresh the page or update the UI as needed
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
-
-        function deleteProduct(product_id) {
-            var confirmDelete = confirm("Are you sure you want to delete this product?");
-            if (confirmDelete) {
-                // Send a DELETE request to delete the product
-                fetch(`/delete_product/${product_id}`, {
-                    method: 'DELETE',
+            fetch('/update_product', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: product_id,
+                        new_name: new_name,
+                        new_description: new_description,
+                        new_price: new_price,
+                        new_quantity: new_quantity
+                    }),
                 })
                 .then(response => response.json())
                 .then(data => {
                     alert(data.message);
-                    // You may refresh the page or update the UI as needed
+                    closeUpdateModal();
+
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
+        }
+
+        function deleteProduct(product_id) {
+            var confirmDelete = confirm("Are you sure you want to delete this product?");
+            if (confirmDelete) {
+                fetch(`/delete_product/${product_id}`, {
+                        method: 'DELETE',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        // You may refresh the page or update the UI as needed
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
             }
         }
     </script>
+    <a href="{{ url_for('admin') }}"><button type="button">Return</button></a>
 </body>
 
 </html>
