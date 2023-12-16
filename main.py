@@ -23,7 +23,7 @@ def get_mysql_connection():
 
 mysql = MySQL(app)
 
-
+#to commit
 @app.route("/")
 def welcome():
     return render_template('welcome.html')
