@@ -1,6 +1,61 @@
 <!DOCTYPE html>
 <html>
+<style>
+        body {
+            text-align: center;
+            padding-top: 50px;
+        }
+        form {
+            display: inline-block;
+            text-align: left;
+        }
+        table {
+            margin: 20px auto;
+        }
+        .modal-content {
+            width: 300px;
+            padding: 20px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+            position: relative;
 
+        }
+         h2 {
+            margin-left: 0px; /* Adjust the margin to move "Update Product" to the right */
+        }
+        .modal-content label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .modal-content input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .modal-content input[type="button"] {
+            display: block;
+            padding: 8px 15px;
+            margin: 0 auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .modal-content input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        .close-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+    </style>
 <body>
     <h1>Storage</h1>
     <table border="1">
@@ -26,11 +81,11 @@
         </tr>
         {% endfor %}
     </table>
-
+    <button class="close-button" onclick="closeUpdateModal()">&times;</button>
     <!-- Modal for Update -->
     <div id="updateModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeUpdateModal()">&times;</span>
+<!--            <span class="close" onclick="closeUpdateModal()">&times;</span>-->
             <h2>Update Product</h2>
             <form id="updateForm">
                 <input type="hidden" id="productId" name="productId">
