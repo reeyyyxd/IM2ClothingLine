@@ -219,7 +219,7 @@ def checkout():
 # jobeteezy
 @app.route("/admin")
 def admin():
-    if 'Username' in session:
+    if 'username' in session:
         return render_template('admin.html')
     else:
         return redirect(url_for('login'))
