@@ -9,7 +9,8 @@ btaw incase nga kalimot mo mag install og python flask, use deez:
 6. Set it as default schema
 7. paste the sql code "tables.sql" to the query of the JJRREClothingLine Schema
 8. after that, paste also the sql code "vies procedures and triggers.sql" to the query of the JJRREClothingLine Schema
-9. it should be working.
+9. run the fucking app by typing in your terminal "flask --app main  run --debug"
+10. it should be working.
 
 
 AMEN!
